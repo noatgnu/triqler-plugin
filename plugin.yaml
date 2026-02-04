@@ -1,0 +1,156 @@
+---
+plugin:
+  id: "triqler"
+  name: "Triqler Protein Quantification"
+  description: "Protein quantification with integrated error propagation using Triqler. Propagates uncertainty from MS1 features through peptide to protein level using a probabilistic graphical model, producing posterior probabilities for differential expression. Based on: The & Käll (2019) Mol Cell Proteomics 18(3):561-570. Repository: https://github.com/statisticalbiotechnology/triqler"
+  version: "1.0.0"
+  author: "CauldronGO Team"
+  category: "statistics"
+  subcategory: "quantification"
+  icon: "query_stats"
+  repository: "https://github.com/noatgnu/triqler-plugin"
+
+runtime:
+  environments: ["python"]
+  entrypoint: "triqler_runner.py"
+
+inputs:
+  - name: "input_file"
+    label: "Input PSM File"
+    type: "file"
+    required: true
+    accept: ".tsv,.txt,.csv"
+    description: "Tab-separated PSM file with columns: run, condition, charge, searchScore, intensity, peptide, proteins"
+
+  - name: "fold_change_eval"
+    label: "Log2 Fold Change Threshold"
+    type: "number"
+    required: false
+    default: 1.0
+    min: 0
+    max: 10
+    step: 0.1
+    description: "Log2 fold change evaluation threshold for differential expression"
+
+  - name: "decoy_pattern"
+    label: "Decoy Protein Prefix"
+    type: "text"
+    required: false
+    default: "decoy_"
+    placeholder: "decoy_"
+    description: "Prefix used to identify decoy proteins in reversed database search"
+
+  - name: "min_samples"
+    label: "Minimum Samples"
+    type: "number"
+    required: false
+    default: 2
+    min: 1
+    max: 20
+    step: 1
+    description: "Minimum number of peptide quantifications required per protein"
+
+  - name: "missing_value_prior"
+    label: "Missing Value Prior"
+    type: "select"
+    required: false
+    default: "default"
+    options:
+      - "default"
+      - "DIA"
+    description: "Distribution fitting method for missing values. Use DIA for DIA data."
+
+  - name: "num_threads"
+    label: "Number of Threads"
+    type: "number"
+    required: false
+    default: 0
+    min: 0
+    max: 64
+    step: 1
+    description: "Number of CPU threads to use (0 = use all available cores)"
+
+  - name: "use_ttest"
+    label: "Use T-Test"
+    type: "boolean"
+    required: false
+    default: false
+    description: "Use t-test instead of Bayesian posterior probabilities for differential expression"
+
+  - name: "write_spectrum_quants"
+    label: "Write Spectrum Quantifications"
+    type: "boolean"
+    required: false
+    default: false
+    description: "Output consensus spectrum quantification data"
+
+  - name: "write_protein_posteriors"
+    label: "Write Protein Posteriors"
+    type: "boolean"
+    required: false
+    default: false
+    description: "Export protein posterior distributions to a separate file"
+
+  - name: "write_group_posteriors"
+    label: "Write Group Posteriors"
+    type: "boolean"
+    required: false
+    default: false
+    description: "Export treatment group posterior distributions to a separate file"
+
+  - name: "write_fold_change_posteriors"
+    label: "Write Fold Change Posteriors"
+    type: "boolean"
+    required: false
+    default: false
+    description: "Export fold change posterior distributions to a separate file"
+
+outputs:
+  - name: "protein_results"
+    path: "proteins.tsv"
+    type: "data"
+    description: "Protein-level quantification results with q-values, posterior error probabilities, and fold change estimates"
+    format: "tsv"
+
+  - name: "spectrum_quants"
+    path: "spectrum_quants.tsv"
+    type: "data"
+    description: "Consensus spectrum quantification data"
+    format: "tsv"
+    optional: true
+
+  - name: "protein_posteriors"
+    path: "protein_posteriors.tsv"
+    type: "data"
+    description: "Protein posterior distributions"
+    format: "tsv"
+    optional: true
+
+  - name: "group_posteriors"
+    path: "group_posteriors.tsv"
+    type: "data"
+    description: "Treatment group posterior distributions"
+    format: "tsv"
+    optional: true
+
+  - name: "fold_change_posteriors"
+    path: "fold_change_posteriors.tsv"
+    type: "data"
+    description: "Fold change posterior distributions"
+    format: "tsv"
+    optional: true
+
+execution:
+  outputDir: "--output_dir"
+  requirements:
+    python: ">=3.10"
+    pythonRequirementsFile: "requirements.txt"
+
+example:
+  enabled: false
+  values:
+    fold_change_eval: 1.0
+    decoy_pattern: "decoy_"
+    min_samples: 2
+    missing_value_prior: "default"
+    use_ttest: false

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plugin Documentation</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #2196f3;
+            padding-bottom: 10px;
+            color: #1976d2;
+        }
+        h2 {
+            margin-top: 30px;
+            color: #1976d2;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 5px;
+        }
+        h3 {
+            margin-top: 20px;
+            color: #424242;
+        }
+        h4 {
+            color: #616161;
+        }
+        a {
+            color: #2196f3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        blockquote {
+            border-left: 4px solid #2196f3;
+            margin: 0;
+            padding-left: 15px;
+            color: #666;
+            background: #f5f9fc;
+            padding: 10px 15px;
+            border-radius: 4px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #2196f3;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        ul, ol {
+            padding-left: 25px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        strong {
+            font-weight: 600;
+            color: #1976d2;
+        }
+        .mermaid {
+            text-align: center;
+            margin: 20px 0;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+<h1 id="triqler-protein-quantification">Triqler Protein Quantification</h1>
+<h2 id="installation">Installation</h2>
+<p><a href="cauldron://install?repo=https%3A%2F%2Fgithub.com%2Fnoatgnu%2Ftriqler-plugin">⬇️ <strong>Click here to install in Cauldron</strong></a></p>
+<blockquote>
+<p><strong>Repository</strong>: <code>https://github.com/noatgnu/triqler-plugin</code></p>
+</blockquote>
+<p><strong>Manual installation:</strong></p>
+<ol>
+<li>Open Cauldron</li>
+<li>Go to <strong>Plugins</strong> → <strong>Install from Repository</strong></li>
+<li>Paste: <code>https://github.com/noatgnu/triqler-plugin</code></li>
+<li>Click <strong>Install</strong></li>
+</ol>
+<p><strong>ID</strong>: <code>triqler</code><br>
+<strong>Version</strong>: 1.0.0<br>
+<strong>Category</strong>: statistics<br>
+<strong>Author</strong>: CauldronGO Team</p>
+<h2 id="description">Description</h2>
+<p>Protein quantification with integrated error propagation using Triqler. Propagates uncertainty from MS1 features through peptide to protein level using a probabilistic graphical model, producing posterior probabilities for differential expression. Based on: The &amp; Käll (2019) Mol Cell Proteomics 18(3):561-570. Repository: <a href="https://github.com/statisticalbiotechnology/triqler">https://github.com/statisticalbiotechnology/triqler</a></p>
+<h2 id="runtime">Runtime</h2>
+<ul>
+<li>
+<p><strong>Environments</strong>: <code>python</code></p>
+</li>
+<li>
+<p><strong>Entrypoint</strong>: <code>triqler_runner.py</code></p>
+</li>
+</ul>
+<h2 id="inputs">Inputs</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Label</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Visibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input_file</code></td>
+<td>Input PSM File</td>
+<td>file</td>
+<td>Yes</td>
+<td>-</td>
+<td>Always visible</td>
+</tr>
+<tr>
+<td><code>fold_change_eval</code></td>
+<td>Log2 Fold Change Threshold</td>
+<td>number (min: 0, max: 10, step: 0)</td>
+<td>No</td>
+<td>1</td>
+<td>Always visible</td>
+</tr>
+<tr>
+<td><code>decoy_pattern</code></td>
+<td>Decoy Protein Prefix</td>
+<td>text</td>
+<td>No</td>
+<td>decoy_</td>
+<td>Always visible</td>
+</tr>
+<tr>
+<td><code>min_samples</code></td>
+<td>Minimum Samples</td>
+<td>number (min: 1, max: 20, step: 1)</td>
+<td>No</td>
+<td>2</td>
+<td>Always visible</td>
+</tr>
+<tr>
+<td><code>missing_value_prior</code></td>
+<td>Missing Value Prior</td>
+<td>select (default, DIA)</td>
+<td>No</td>
+<td>default</td>
+<td>Always visible</td>
+</tr>
+<tr>
+<td><code>num_threads</code></td>
+<td>Number of Threads</td>
+<td>number (min: 0, max: 64, step: 1)</td>
+<td>No</td>
+<td>0</td>
+<td>Always visible</td>
+</tr>
+<tr>
+<td><code>use_ttest</code></td>
+<td>Use T-Test</td>
+<td>boolean</td>
+<td>No</td>
+<td>false</td>
+<td>Always visible</td>
+</tr>
+<tr>
+<td><code>write_spectrum_quants</code></td>
+<td>Write Spectrum Quantifications</td>
+<td>boolean</td>
+<td>No</td>
+<td>false</td>
+<td>Always visible</td>
+</tr>
+<tr>
+<td><code>write_protein_posteriors</code></td>
+<td>Write Protein Posteriors</td>
+<td>boolean</td>
+<td>No</td>
+<td>false</td>
+<td>Always visible</td>
+</tr>
+<tr>
+<td><code>write_group_posteriors</code></td>
+<td>Write Group Posteriors</td>
+<td>boolean</td>
+<td>No</td>
+<td>false</td>
+<td>Always visible</td>
+</tr>
+<tr>
+<td><code>write_fold_change_posteriors</code></td>
+<td>Write Fold Change Posteriors</td>
+<td>boolean</td>
+<td>No</td>
+<td>false</td>
+<td>Always visible</td>
+</tr>
+</tbody>
+</table>
+<h3 id="input-details">Input Details</h3>
+<h4 id="input-psm-file-input-file">Input PSM File (<code>input_file</code>)</h4>
+<p>Tab-separated PSM file with columns: run, condition, charge, searchScore, intensity, peptide, proteins</p>
+<h4 id="log2-fold-change-threshold-fold-change-eval">Log2 Fold Change Threshold (<code>fold_change_eval</code>)</h4>
+<p>Log2 fold change evaluation threshold for differential expression</p>
+<h4 id="decoy-protein-prefix-decoy-pattern">Decoy Protein Prefix (<code>decoy_pattern</code>)</h4>
+<p>Prefix used to identify decoy proteins in reversed database search</p>
+<ul>
+<li><strong>Placeholder</strong>: <code>decoy_</code></li>
+</ul>
+<h4 id="minimum-samples-min-samples">Minimum Samples (<code>min_samples</code>)</h4>
+<p>Minimum number of peptide quantifications required per protein</p>
+<h4 id="missing-value-prior-missing-value-prior">Missing Value Prior (<code>missing_value_prior</code>)</h4>
+<p>Distribution fitting method for missing values. Use DIA for DIA data.</p>
+<ul>
+<li><strong>Options</strong>: <code>default</code>, <code>DIA</code></li>
+</ul>
+<h4 id="number-of-threads-num-threads">Number of Threads (<code>num_threads</code>)</h4>
+<p>Number of CPU threads to use (0 = use all available cores)</p>
+<h4 id="use-t-test-use-ttest">Use T-Test (<code>use_ttest</code>)</h4>
+<p>Use t-test instead of Bayesian posterior probabilities for differential expression</p>
+<h4 id="write-spectrum-quantifications-write-spectrum-quants">Write Spectrum Quantifications (<code>write_spectrum_quants</code>)</h4>
+<p>Output consensus spectrum quantification data</p>
+<h4 id="write-protein-posteriors-write-protein-posteriors">Write Protein Posteriors (<code>write_protein_posteriors</code>)</h4>
+<p>Export protein posterior distributions to a separate file</p>
+<h4 id="write-group-posteriors-write-group-posteriors">Write Group Posteriors (<code>write_group_posteriors</code>)</h4>
+<p>Export treatment group posterior distributions to a separate file</p>
+<h4 id="write-fold-change-posteriors-write-fold-change-posteriors">Write Fold Change Posteriors (<code>write_fold_change_posteriors</code>)</h4>
+<p>Export fold change posterior distributions to a separate file</p>
+<h2 id="outputs">Outputs</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>File</th>
+<th>Type</th>
+<th>Format</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>protein_results</code></td>
+<td><code>proteins.tsv</code></td>
+<td>data</td>
+<td>tsv</td>
+<td>Protein-level quantification results with q-values, posterior error probabilities, and fold change estimates</td>
+</tr>
+<tr>
+<td><code>spectrum_quants</code></td>
+<td><code>spectrum_quants.tsv</code></td>
+<td>data</td>
+<td>tsv</td>
+<td>Consensus spectrum quantification data</td>
+</tr>
+<tr>
+<td><code>protein_posteriors</code></td>
+<td><code>protein_posteriors.tsv</code></td>
+<td>data</td>
+<td>tsv</td>
+<td>Protein posterior distributions</td>
+</tr>
+<tr>
+<td><code>group_posteriors</code></td>
+<td><code>group_posteriors.tsv</code></td>
+<td>data</td>
+<td>tsv</td>
+<td>Treatment group posterior distributions</td>
+</tr>
+<tr>
+<td><code>fold_change_posteriors</code></td>
+<td><code>fold_change_posteriors.tsv</code></td>
+<td>data</td>
+<td>tsv</td>
+<td>Fold change posterior distributions</td>
+</tr>
+</tbody>
+</table>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li><strong>Python Version</strong>: &gt;=3.10</li>
+</ul>
+<h3 id="python-dependencies-external-file">Python Dependencies (External File)</h3>
+<p>Dependencies are defined in: <code>requirements.txt</code></p>
+<ul>
+<li><code>triqler&gt;=0.6.0</code></li>
+<li><code>click&gt;=8.0.0</code></li>
+</ul>
+<blockquote>
+<p><strong>Note</strong>: When you create a custom environment for this plugin, these dependencies will be automatically installed.</p>
+</blockquote>
+<h2 id="usage">Usage</h2>
+<h3 id="via-ui">Via UI</h3>
+<ol>
+<li>Navigate to <strong>statistics</strong> → <strong>Triqler Protein Quantification</strong></li>
+<li>Fill in the required inputs</li>
+<li>Click <strong>Run Analysis</strong></li>
+</ol>
+<h3 id="via-plugin-system">Via Plugin System</h3>
+<pre><code class="language-typescript">const jobId = await pluginService.executePlugin('triqler', {
+  // Add parameters here
+});
+</code></pre>
+
+</body>
+</html>
