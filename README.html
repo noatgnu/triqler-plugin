@@ -122,7 +122,7 @@
 <li>Click <strong>Install</strong></li>
 </ol>
 <p><strong>ID</strong>: <code>triqler</code><br>
-<strong>Version</strong>: 1.0.1<br>
+<strong>Version</strong>: 1.0.2<br>
 <strong>Category</strong>: statistics<br>
 <strong>Author</strong>: CauldronGO Team</p>
 <h2 id="description">Description</h2>
@@ -167,7 +167,7 @@
 </tr>
 <tr>
 <td><code>file_list_file</code></td>
-<td>Sample Annotation File</td>
+<td>Run Mapping File</td>
 <td>file</td>
 <td>No</td>
 <td>-</td>
@@ -263,8 +263,8 @@
 </ul>
 <h4 id="input-file-input-file">Input File (<code>input_file</code>)</h4>
 <p>For triqler format: PSM file with columns (run, condition, charge, searchScore, intensity, peptide, proteins). For DIA-NN: report.tsv or report.parquet. For MaxQuant: evidence.txt</p>
-<h4 id="sample-annotation-file-file-list-file">Sample Annotation File (<code>file_list_file</code>)</h4>
-<p>Required for DIA-NN/MaxQuant: Tab-separated file mapping run names to conditions. Columns: run_name, condition, [sample_id], [fraction]</p>
+<h4 id="run-mapping-file-file-list-file">Run Mapping File (<code>file_list_file</code>)</h4>
+<p>Required for DIA-NN/MaxQuant: Tab-separated file (NO HEADER) mapping run names to conditions. For DIA-NN: run names must match the 'Run' column. For MaxQuant: must match 'Raw file' column without path. Columns: run, condition, [sample], [fraction]</p>
 <h4 id="log2-fold-change-threshold-fold-change-eval">Log2 Fold Change Threshold (<code>fold_change_eval</code>)</h4>
 <p>Log2 fold change evaluation threshold for differential expression</p>
 <h4 id="decoy-protein-prefix-decoy-pattern">Decoy Protein Prefix (<code>decoy_pattern</code>)</h4>

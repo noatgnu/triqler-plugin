@@ -15,7 +15,7 @@
 4. Click **Install**
 
 **ID**: `triqler`  
-**Version**: 1.0.1  
+**Version**: 1.0.2  
 **Category**: statistics  
 **Author**: CauldronGO Team
 
@@ -35,7 +35,7 @@ Protein quantification with integrated error propagation using Triqler. Propagat
 |------|-------|------|----------|---------|------------|
 | `input_format` | Input Format | select (triqler, diann, maxquant) | Yes | triqler | Always visible |
 | `input_file` | Input File | file | Yes | - | Always visible |
-| `file_list_file` | Sample Annotation File | file | No | - | Conditional |
+| `file_list_file` | Run Mapping File | file | No | - | Conditional |
 | `fold_change_eval` | Log2 Fold Change Threshold | number (min: 0, max: 10, step: 0) | No | 1 | Always visible |
 | `decoy_pattern` | Decoy Protein Prefix | text | No | decoy_ | Always visible |
 | `min_samples` | Minimum Samples | number (min: 1, max: 20, step: 1) | No | 2 | Always visible |
@@ -60,9 +60,9 @@ Format of the input file. Select 'triqler' for pre-formatted files, 'diann' for 
 For triqler format: PSM file with columns (run, condition, charge, searchScore, intensity, peptide, proteins). For DIA-NN: report.tsv or report.parquet. For MaxQuant: evidence.txt
 
 
-#### Sample Annotation File (`file_list_file`)
+#### Run Mapping File (`file_list_file`)
 
-Required for DIA-NN/MaxQuant: Tab-separated file mapping run names to conditions. Columns: run_name, condition, [sample_id], [fraction]
+Required for DIA-NN/MaxQuant: Tab-separated file (NO HEADER) mapping run names to conditions. For DIA-NN: run names must match the 'Run' column. For MaxQuant: must match 'Raw file' column without path. Columns: run, condition, [sample], [fraction]
 
 
 #### Log2 Fold Change Threshold (`fold_change_eval`)

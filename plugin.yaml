@@ -3,7 +3,7 @@ plugin:
   id: "triqler"
   name: "Triqler Protein Quantification"
   description: "Protein quantification with integrated error propagation using Triqler. Propagates uncertainty from MS1 features through peptide to protein level using a probabilistic graphical model, producing posterior probabilities for differential expression. Based on: The & Käll (2019) Mol Cell Proteomics 18(3):561-570. Repository: https://github.com/statisticalbiotechnology/triqler"
-  version: "1.0.2"
+  version: "1.0.3"
   author: "CauldronGO Team"
   category: "statistics"
   subcategory: "quantification"
@@ -34,11 +34,12 @@ inputs:
     description: "For triqler format: PSM file with columns (run, condition, charge, searchScore, intensity, peptide, proteins). For DIA-NN: report.tsv or report.parquet. For MaxQuant: evidence.txt"
 
   - name: "file_list_file"
-    label: "Sample Annotation File"
+    label: "Run Mapping File"
     type: "file"
     required: false
     accept: ".tsv,.txt"
-    description: "Required for DIA-NN/MaxQuant: Tab-separated file mapping run names to conditions. Columns: run_name, condition, [sample_id], [fraction]"
+    description: "Required for DIA-NN/MaxQuant: Tab-separated file (NO HEADER) mapping run names to conditions. For DIA-NN: run names must match the 'Run' column. For MaxQuant: must match 'Raw file' column without path. Columns: run, condition, [sample], [fraction]"
+    disableAnnotationManagement: true
     visibleWhen:
       field: "input_format"
       notEquals: "triqler"
