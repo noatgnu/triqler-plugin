@@ -3,7 +3,7 @@ plugin:
   id: "triqler"
   name: "Triqler Protein Quantification"
   description: "Protein quantification with integrated error propagation using Triqler. Propagates uncertainty from MS1 features through peptide to protein level using a probabilistic graphical model, producing posterior probabilities for differential expression. Based on: The & Käll (2019) Mol Cell Proteomics 18(3):561-570. Repository: https://github.com/statisticalbiotechnology/triqler"
-  version: "1.0.0"
+  version: "1.0.1"
   author: "CauldronGO Team"
   category: "statistics"
   subcategory: "quantification"
