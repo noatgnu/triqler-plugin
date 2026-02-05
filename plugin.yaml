@@ -3,7 +3,7 @@ plugin:
   id: "triqler"
   name: "Triqler Protein Quantification"
   description: "Protein quantification with integrated error propagation using Triqler. Propagates uncertainty from MS1 features through peptide to protein level using a probabilistic graphical model, producing posterior probabilities for differential expression. Based on: The & Käll (2019) Mol Cell Proteomics 18(3):561-570. Repository: https://github.com/statisticalbiotechnology/triqler"
-  version: "1.0.1"
+  version: "1.0.2"
   author: "CauldronGO Team"
   category: "statistics"
   subcategory: "quantification"
@@ -170,6 +170,30 @@ outputs:
 
 execution:
   outputDir: "--output_dir"
+  argsMapping:
+    input_format: "--input_format"
+    input_file: "--input_file"
+    file_list_file: "--file_list_file"
+    fold_change_eval: "--fold_change_eval"
+    decoy_pattern: "--decoy_pattern"
+    min_samples: "--min_samples"
+    missing_value_prior: "--missing_value_prior"
+    num_threads: "--num_threads"
+    use_ttest:
+      flag: "--use_ttest"
+      when: "true"
+    write_spectrum_quants:
+      flag: "--write_spectrum_quants"
+      when: "true"
+    write_protein_posteriors:
+      flag: "--write_protein_posteriors"
+      when: "true"
+    write_group_posteriors:
+      flag: "--write_group_posteriors"
+      when: "true"
+    write_fold_change_posteriors:
+      flag: "--write_fold_change_posteriors"
+      when: "true"
   requirements:
     python: ">=3.10"
     pythonRequirementsFile: "requirements.txt"
