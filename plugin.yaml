@@ -15,12 +15,33 @@ runtime:
   entrypoint: "triqler_runner.py"
 
 inputs:
+  - name: "input_format"
+    label: "Input Format"
+    type: "select"
+    required: true
+    default: "triqler"
+    options:
+      - "triqler"
+      - "diann"
+      - "maxquant"
+    description: "Format of the input file. Select 'triqler' for pre-formatted files, 'diann' for DIA-NN report files, or 'maxquant' for MaxQuant evidence.txt"
+
   - name: "input_file"
-    label: "Input PSM File"
+    label: "Input File"
     type: "file"
     required: true
-    accept: ".tsv,.txt,.csv"
-    description: "Tab-separated PSM file with columns: run, condition, charge, searchScore, intensity, peptide, proteins"
+    accept: ".tsv,.txt,.csv,.parquet"
+    description: "For triqler format: PSM file with columns (run, condition, charge, searchScore, intensity, peptide, proteins). For DIA-NN: report.tsv or report.parquet. For MaxQuant: evidence.txt"
+
+  - name: "file_list_file"
+    label: "Sample Annotation File"
+    type: "file"
+    required: false
+    accept: ".tsv,.txt"
+    description: "Required for DIA-NN/MaxQuant: Tab-separated file mapping run names to conditions. Columns: run_name, condition, [sample_id], [fraction]"
+    visibleWhen:
+      field: "input_format"
+      notEquals: "triqler"
 
   - name: "fold_change_eval"
     label: "Log2 Fold Change Threshold"
@@ -112,6 +133,13 @@ outputs:
     description: "Protein-level quantification results with q-values, posterior error probabilities, and fold change estimates"
     format: "tsv"
 
+  - name: "triqler_input"
+    path: "triqler_input.tsv"
+    type: "data"
+    description: "Converted triqler input file (only generated when using DIA-NN or MaxQuant format)"
+    format: "tsv"
+    optional: true
+
   - name: "spectrum_quants"
     path: "spectrum_quants.tsv"
     type: "data"
@@ -149,6 +177,7 @@ execution:
 example:
   enabled: false
   values:
+    input_format: "triqler"
     fold_change_eval: 1.0
     decoy_pattern: "decoy_"
     min_samples: 2

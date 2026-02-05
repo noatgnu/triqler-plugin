@@ -150,12 +150,28 @@
 </thead>
 <tbody>
 <tr>
+<td><code>input_format</code></td>
+<td>Input Format</td>
+<td>select (triqler, diann, maxquant)</td>
+<td>Yes</td>
+<td>triqler</td>
+<td>Always visible</td>
+</tr>
+<tr>
 <td><code>input_file</code></td>
-<td>Input PSM File</td>
+<td>Input File</td>
 <td>file</td>
 <td>Yes</td>
 <td>-</td>
 <td>Always visible</td>
+</tr>
+<tr>
+<td><code>file_list_file</code></td>
+<td>Sample Annotation File</td>
+<td>file</td>
+<td>No</td>
+<td>-</td>
+<td>Conditional</td>
 </tr>
 <tr>
 <td><code>fold_change_eval</code></td>
@@ -240,8 +256,15 @@
 </tbody>
 </table>
 <h3 id="input-details">Input Details</h3>
-<h4 id="input-psm-file-input-file">Input PSM File (<code>input_file</code>)</h4>
-<p>Tab-separated PSM file with columns: run, condition, charge, searchScore, intensity, peptide, proteins</p>
+<h4 id="input-format-input-format">Input Format (<code>input_format</code>)</h4>
+<p>Format of the input file. Select 'triqler' for pre-formatted files, 'diann' for DIA-NN report files, or 'maxquant' for MaxQuant evidence.txt</p>
+<ul>
+<li><strong>Options</strong>: <code>triqler</code>, <code>diann</code>, <code>maxquant</code></li>
+</ul>
+<h4 id="input-file-input-file">Input File (<code>input_file</code>)</h4>
+<p>For triqler format: PSM file with columns (run, condition, charge, searchScore, intensity, peptide, proteins). For DIA-NN: report.tsv or report.parquet. For MaxQuant: evidence.txt</p>
+<h4 id="sample-annotation-file-file-list-file">Sample Annotation File (<code>file_list_file</code>)</h4>
+<p>Required for DIA-NN/MaxQuant: Tab-separated file mapping run names to conditions. Columns: run_name, condition, [sample_id], [fraction]</p>
 <h4 id="log2-fold-change-threshold-fold-change-eval">Log2 Fold Change Threshold (<code>fold_change_eval</code>)</h4>
 <p>Log2 fold change evaluation threshold for differential expression</p>
 <h4 id="decoy-protein-prefix-decoy-pattern">Decoy Protein Prefix (<code>decoy_pattern</code>)</h4>
@@ -288,6 +311,13 @@
 <td>Protein-level quantification results with q-values, posterior error probabilities, and fold change estimates</td>
 </tr>
 <tr>
+<td><code>triqler_input</code></td>
+<td><code>triqler_input.tsv</code></td>
+<td>data</td>
+<td>tsv</td>
+<td>Converted triqler input file (only generated when using DIA-NN or MaxQuant format)</td>
+</tr>
+<tr>
 <td><code>spectrum_quants</code></td>
 <td><code>spectrum_quants.tsv</code></td>
 <td>data</td>
@@ -326,6 +356,7 @@
 <ul>
 <li><code>triqler&gt;=0.6.0</code></li>
 <li><code>click&gt;=8.0.0</code></li>
+<li><code>pyarrow&gt;=10.0.0</code></li>
 </ul>
 <blockquote>
 <p><strong>Note</strong>: When you create a custom environment for this plugin, these dependencies will be automatically installed.</p>

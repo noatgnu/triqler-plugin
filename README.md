@@ -33,7 +33,9 @@ Protein quantification with integrated error propagation using Triqler. Propagat
 
 | Name | Label | Type | Required | Default | Visibility |
 |------|-------|------|----------|---------|------------|
-| `input_file` | Input PSM File | file | Yes | - | Always visible |
+| `input_format` | Input Format | select (triqler, diann, maxquant) | Yes | triqler | Always visible |
+| `input_file` | Input File | file | Yes | - | Always visible |
+| `file_list_file` | Sample Annotation File | file | No | - | Conditional |
 | `fold_change_eval` | Log2 Fold Change Threshold | number (min: 0, max: 10, step: 0) | No | 1 | Always visible |
 | `decoy_pattern` | Decoy Protein Prefix | text | No | decoy_ | Always visible |
 | `min_samples` | Minimum Samples | number (min: 1, max: 20, step: 1) | No | 2 | Always visible |
@@ -47,9 +49,20 @@ Protein quantification with integrated error propagation using Triqler. Propagat
 
 ### Input Details
 
-#### Input PSM File (`input_file`)
+#### Input Format (`input_format`)
 
-Tab-separated PSM file with columns: run, condition, charge, searchScore, intensity, peptide, proteins
+Format of the input file. Select 'triqler' for pre-formatted files, 'diann' for DIA-NN report files, or 'maxquant' for MaxQuant evidence.txt
+
+- **Options**: `triqler`, `diann`, `maxquant`
+
+#### Input File (`input_file`)
+
+For triqler format: PSM file with columns (run, condition, charge, searchScore, intensity, peptide, proteins). For DIA-NN: report.tsv or report.parquet. For MaxQuant: evidence.txt
+
+
+#### Sample Annotation File (`file_list_file`)
+
+Required for DIA-NN/MaxQuant: Tab-separated file mapping run names to conditions. Columns: run_name, condition, [sample_id], [fraction]
 
 
 #### Log2 Fold Change Threshold (`fold_change_eval`)
@@ -109,6 +122,7 @@ Export fold change posterior distributions to a separate file
 | Name | File | Type | Format | Description |
 |------|------|------|--------|-------------|
 | `protein_results` | `proteins.tsv` | data | tsv | Protein-level quantification results with q-values, posterior error probabilities, and fold change estimates |
+| `triqler_input` | `triqler_input.tsv` | data | tsv | Converted triqler input file (only generated when using DIA-NN or MaxQuant format) |
 | `spectrum_quants` | `spectrum_quants.tsv` | data | tsv | Consensus spectrum quantification data |
 | `protein_posteriors` | `protein_posteriors.tsv` | data | tsv | Protein posterior distributions |
 | `group_posteriors` | `group_posteriors.tsv` | data | tsv | Treatment group posterior distributions |
@@ -124,6 +138,7 @@ Dependencies are defined in: `requirements.txt`
 
 - `triqler>=0.6.0`
 - `click>=8.0.0`
+- `pyarrow>=10.0.0`
 
 > **Note**: When you create a custom environment for this plugin, these dependencies will be automatically installed.
 
