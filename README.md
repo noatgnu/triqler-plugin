@@ -41,6 +41,9 @@ Protein quantification with integrated error propagation using Triqler. Propagat
 | `min_samples` | Minimum Samples | number (min: 1, max: 20, step: 1) | No | 2 | Always visible |
 | `missing_value_prior` | Missing Value Prior | select (default, DIA) | No | default | Always visible |
 | `num_threads` | Number of Threads | number (min: 0, max: 64, step: 1) | No | 0 | Always visible |
+| `protein_quant_fdr` | Protein Quant FDR | number (min: 0, max: 1, step: 0.01) | No | 0.05 | Always visible |
+| `peptide_quant_fdr` | Peptide Quant FDR | number (min: 0, max: 1, step: 0.01) | No | 0.05 | Always visible |
+| `protein_diff_fdr` | Protein Diff FDR | number (min: 0, max: 1, step: 0.01) | No | 0.05 | Always visible |
 | `use_ttest` | Use T-Test | boolean | No | false | Always visible |
 | `write_spectrum_quants` | Write Spectrum Quantifications | boolean | No | false | Always visible |
 | `write_protein_posteriors` | Write Protein Posteriors | boolean | No | false | Always visible |
@@ -90,6 +93,21 @@ Distribution fitting method for missing values. Use DIA for DIA data.
 #### Number of Threads (`num_threads`)
 
 Number of CPU threads to use (0 = use all available cores)
+
+
+#### Protein Quant FDR (`protein_quant_fdr`)
+
+Protein-level quantification FDR threshold
+
+
+#### Peptide Quant FDR (`peptide_quant_fdr`)
+
+Peptide-level quantification FDR threshold
+
+
+#### Protein Diff FDR (`protein_diff_fdr`)
+
+Protein-level differential expression FDR threshold
 
 
 #### Use T-Test (`use_ttest`)

@@ -186,6 +186,9 @@ def add_gene_names(output_dir: str, decoy_pattern: str) -> None:
 @click.option("--min_samples", type=int, default=2, help="Minimum peptide quantifications required")
 @click.option("--missing_value_prior", default="default", help="Missing value prior (default or DIA)")
 @click.option("--num_threads", type=int, default=0, help="Number of threads (0 = all cores)")
+@click.option("--protein_quant_fdr", type=float, default=0.05, help="Protein quantification FDR")
+@click.option("--peptide_quant_fdr", type=float, default=0.05, help="Peptide quantification FDR")
+@click.option("--protein_diff_fdr", type=float, default=0.05, help="Protein differential expression FDR")
 @click.option("--use_ttest", is_flag=True, default=False, help="Use t-test instead of posterior probabilities")
 @click.option("--write_spectrum_quants", is_flag=True, default=False, help="Output spectrum quantifications")
 @click.option("--write_protein_posteriors", is_flag=True, default=False, help="Export protein posteriors")
@@ -201,6 +204,9 @@ def run_triqler(
     min_samples: int,
     missing_value_prior: str,
     num_threads: int,
+    protein_quant_fdr: float,
+    peptide_quant_fdr: float,
+    protein_diff_fdr: float,
     use_ttest: bool,
     write_spectrum_quants: bool,
     write_protein_posteriors: bool,
@@ -239,6 +245,9 @@ def run_triqler(
         "--fold_change_eval", str(fold_change_eval),
         "--decoy_pattern", decoy_pattern,
         "--min_samples", str(min_samples),
+        "--protein_quant_fdr", str(protein_quant_fdr),
+        "--peptide_quant_fdr", str(peptide_quant_fdr),
+        "--protein_diff_fdr", str(protein_diff_fdr),
     ]
 
     if missing_value_prior == "DIA":
