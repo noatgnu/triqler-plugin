@@ -247,12 +247,14 @@ def run_triqler(
     if num_threads > 0:
         cmd.extend(["--num_threads", str(num_threads)])
 
+    # Input file must come before boolean flags in some versions of Triqler
+    cmd.append(triqler_input_file)
+
     if use_ttest:
         cmd.append("--ttest")
 
     if write_spectrum_quants:
-        spectrum_path = os.path.join(output_dir, "spectrum_quants.tsv")
-        cmd.extend(["--write_spectrum_quants", spectrum_path])
+        cmd.append("--write_spectrum_quants")
 
     if write_protein_posteriors:
         posteriors_path = os.path.join(output_dir, "protein_posteriors.tsv")
@@ -266,8 +268,6 @@ def run_triqler(
         fc_path = os.path.join(output_dir, "fold_change_posteriors.tsv")
         cmd.extend(["--write_fold_change_posteriors", fc_path])
 
-    cmd.append(triqler_input_file)
-
     print(f"Running Triqler: {' '.join(cmd)}")
 
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -280,6 +280,15 @@ def run_triqler(
 
     if result.returncode != 0:
         sys.exit(result.returncode)
+
+    if write_spectrum_quants:
+        base_name = os.path.splitext(os.path.basename(triqler_input_file))[0]
+        spectrum_file = f"{base_name}.spectrum_quants.tsv"
+        if os.path.exists(spectrum_file):
+            print(f"Moving spectrum quants to output directory: {spectrum_file}")
+            shutil.move(spectrum_file, os.path.join(output_dir, "spectrum_quants.tsv"))
+        else:
+            print(f"Warning: Expected spectrum quants file {spectrum_file} not found.", file=sys.stderr)
 
     # Add gene names using UniProt
     add_gene_names(output_dir, decoy_pattern)
