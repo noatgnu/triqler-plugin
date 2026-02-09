@@ -92,6 +92,39 @@ def export_condition_mapping(triqler_input_file: str, output_dir: str) -> None:
         print(f"Warning: Could not extract condition mapping: {e}", file=sys.stderr)
 
 
+def cleanup_protein_files(output_dir: str) -> None:
+    """Consolidates extra peptide columns into a single semicolon-separated 'peptides' column."""
+    protein_files = glob.glob(os.path.join(output_dir, "proteins*.tsv"))
+    for file_path in protein_files:
+        try:
+            temp_file = file_path + ".clean"
+            with open(file_path, "r", encoding="utf-8") as f_in, \
+                 open(temp_file, "w", encoding="utf-8", newline="") as f_out:
+                
+                reader = csv.DictReader(f_in, delimiter="\t")
+                if not reader.fieldnames:
+                    continue
+                
+                writer = csv.DictWriter(f_out, fieldnames=reader.fieldnames, delimiter="\t", extrasaction='ignore')
+                writer.writeheader()
+                
+                for row in reader:
+                    # Collect extra columns from the None key
+                    extras = row.get(None, [])
+                    if extras and "peptides" in row:
+                        # Filter out empty or whitespace-only strings
+                        clean_extras = [x.strip() for x in extras if x and x.strip()]
+                        if clean_extras:
+                            # Append to existing peptides
+                            row["peptides"] = row["peptides"] + ";" + ";".join(clean_extras)
+                    
+                    writer.writerow(row)
+            
+            os.replace(temp_file, file_path)
+        except Exception as e:
+            print(f"Warning: Failed to cleanup malformed columns in {file_path}: {e}", file=sys.stderr)
+
+
 def add_gene_names(output_dir: str, decoy_pattern: str) -> None:
     """Adds a gene name column to all protein results files in the output directory using uniprotparser."""
     try:
@@ -307,6 +340,9 @@ def run_triqler(
             shutil.move(spectrum_file, os.path.join(output_dir, "spectrum_quants.tsv"))
         else:
             print(f"Warning: Expected spectrum quants file {spectrum_file} not found.", file=sys.stderr)
+
+    # Cleanup malformed columns (extra peptides) before processing
+    cleanup_protein_files(output_dir)
 
     # Add gene names using UniProt
     add_gene_names(output_dir, decoy_pattern)
