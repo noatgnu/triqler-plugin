@@ -186,9 +186,6 @@ def add_gene_names(output_dir: str, decoy_pattern: str) -> None:
 @click.option("--min_samples", type=int, default=2, help="Minimum peptide quantifications required")
 @click.option("--missing_value_prior", default="default", help="Missing value prior (default or DIA)")
 @click.option("--num_threads", type=int, default=0, help="Number of threads (0 = all cores)")
-@click.option("--protein_quant_fdr", type=float, default=0.05, help="Protein quantification FDR")
-@click.option("--peptide_quant_fdr", type=float, default=0.05, help="Peptide quantification FDR")
-@click.option("--protein_diff_fdr", type=float, default=0.05, help="Protein differential expression FDR")
 @click.option("--use_ttest", is_flag=True, default=False, help="Use t-test instead of posterior probabilities")
 @click.option("--write_spectrum_quants", is_flag=True, default=False, help="Output spectrum quantifications")
 @click.option("--write_protein_posteriors", is_flag=True, default=False, help="Export protein posteriors")
@@ -204,9 +201,6 @@ def run_triqler(
     min_samples: int,
     missing_value_prior: str,
     num_threads: int,
-    protein_quant_fdr: float,
-    peptide_quant_fdr: float,
-    protein_diff_fdr: float,
     use_ttest: bool,
     write_spectrum_quants: bool,
     write_protein_posteriors: bool,
@@ -245,9 +239,6 @@ def run_triqler(
         "--fold_change_eval", str(fold_change_eval),
         "--decoy_pattern", decoy_pattern,
         "--min_samples", str(min_samples),
-        "--protein_quant_fdr", str(protein_quant_fdr),
-        "--peptide_quant_fdr", str(peptide_quant_fdr),
-        "--protein_diff_fdr", str(protein_diff_fdr),
     ]
 
     if missing_value_prior == "DIA":
@@ -260,7 +251,8 @@ def run_triqler(
         cmd.append("--ttest")
 
     if write_spectrum_quants:
-        cmd.append("--write_spectrum_quants")
+        spectrum_path = os.path.join(output_dir, "spectrum_quants.tsv")
+        cmd.extend(["--write_spectrum_quants", spectrum_path])
 
     if write_protein_posteriors:
         posteriors_path = os.path.join(output_dir, "protein_posteriors.tsv")
@@ -285,12 +277,6 @@ def run_triqler(
 
     if result.stderr:
         print(result.stderr, file=sys.stderr)
-
-    if write_spectrum_quants:
-        base_name = os.path.splitext(os.path.basename(triqler_input_file))[0]
-        spectrum_file = f"{base_name}.spectrum_quants.tsv"
-        if os.path.exists(spectrum_file):
-            shutil.move(spectrum_file, os.path.join(output_dir, "spectrum_quants.tsv"))
 
     if result.returncode != 0:
         sys.exit(result.returncode)

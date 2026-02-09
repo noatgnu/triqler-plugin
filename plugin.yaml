@@ -91,36 +91,6 @@ inputs:
     step: 1
     description: "Number of CPU threads to use (0 = use all available cores)"
 
-  - name: "protein_quant_fdr"
-    label: "Protein Quant FDR"
-    type: "number"
-    required: false
-    default: 0.05
-    min: 0
-    max: 1
-    step: 0.01
-    description: "Protein-level quantification FDR threshold"
-
-  - name: "peptide_quant_fdr"
-    label: "Peptide Quant FDR"
-    type: "number"
-    required: false
-    default: 0.05
-    min: 0
-    max: 1
-    step: 0.01
-    description: "Peptide-level quantification FDR threshold"
-
-  - name: "protein_diff_fdr"
-    label: "Protein Diff FDR"
-    type: "number"
-    required: false
-    default: 0.05
-    min: 0
-    max: 1
-    step: 0.01
-    description: "Protein-level differential expression FDR threshold"
-
   - name: "use_ttest"
     label: "Use T-Test"
     type: "boolean"
@@ -215,9 +185,6 @@ execution:
     min_samples: "--min_samples"
     missing_value_prior: "--missing_value_prior"
     num_threads: "--num_threads"
-    protein_quant_fdr: "--protein_quant_fdr"
-    peptide_quant_fdr: "--peptide_quant_fdr"
-    protein_diff_fdr: "--protein_diff_fdr"
     use_ttest:
       flag: "--use_ttest"
       when: "true"
