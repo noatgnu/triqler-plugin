@@ -104,7 +104,17 @@ def add_gene_names(output_dir: str, decoy_pattern: str) -> None:
     if not protein_files:
         return
 
-    accessions = set()
+    def get_clean_acc(acc: str) -> str:
+        """Extracts the bare accession from strings like 'sp|P12345|NAME'."""
+        if "|" in acc:
+            parts = acc.split("|")
+            if len(parts) > 1:
+                return parts[1]
+        return acc
+
+    raw_to_clean = {}
+    clean_accessions = set()
+    
     for file_path in protein_files:
         try:
             with open(file_path, "r", encoding="utf-8") as f:
@@ -112,31 +122,34 @@ def add_gene_names(output_dir: str, decoy_pattern: str) -> None:
                 if not reader.fieldnames or "protein" not in reader.fieldnames:
                     continue
                 for row in reader:
-                    prot = row["protein"]
-                    for acc in prot.split(";"):
-                        if not acc.startswith(decoy_pattern):
-                            accessions.add(acc)
+                    for raw_acc in row["protein"].split(";"):
+                        if not raw_acc.startswith(decoy_pattern):
+                            clean = get_clean_acc(raw_acc)
+                            raw_to_clean[raw_acc] = clean
+                            clean_accessions.add(clean)
         except Exception as e:
             print(f"Warning: Could not read {file_path} for accession extraction: {e}", file=sys.stderr)
 
-    if not accessions:
+    if not clean_accessions:
         return
 
-    print(f"Fetching gene names for {len(accessions)} proteins from UniProt...")
-    parser = UniprotParser()
+    print(f"Fetching gene names for {len(clean_accessions)} unique proteins from UniProt...")
+    parser = UniprotParser(columns="accession,gene_names")
     mapping = {}
     
     try:
-        # uniprotparser returns a generator of result chunks (TSV format)
-        for result_chunk in parser.parse(ids=list(accessions), columns=["genes"]):
+        for result_chunk in parser.parse(ids=list(clean_accessions), from_key="UniProtKB_AC-ID", to_key="UniProtKB"):
             f = StringIO(result_chunk)
             reader = csv.DictReader(f, delimiter="\t")
             for row in reader:
-                # 'From' contains the original accession, 'Gene Names' contains names
+                # 'From' is the ID we sent, 'Gene Names' is the UniProt result column
                 acc = row.get("From")
                 gene = row.get("Gene Names", "")
+                if not acc:
+                    acc = row.get("Entry") # Fallback
+                
                 if acc and gene:
-                    # Take the first gene name (usually the primary one)
+                    # Take primary gene name (first one)
                     mapping[acc] = str(gene).split(" ")[0]
     except Exception as e:
         print(f"Warning: UniProt mapping failed: {e}", file=sys.stderr)
@@ -156,17 +169,21 @@ def add_gene_names(output_dir: str, decoy_pattern: str) -> None:
                     continue
                 
                 prot_idx = fieldnames.index("protein")
-                # Insert gene_name right after protein column
                 new_fieldnames = fieldnames[:prot_idx+1] + ["gene_name"] + fieldnames[prot_idx+1:]
                 
                 writer = csv.DictWriter(f_out, fieldnames=new_fieldnames, delimiter="\t")
                 writer.writeheader()
                 
                 for row in reader:
-                    accs = row["protein"].split(";")
-                    genes = [mapping.get(acc, "") for acc in accs]
-                    # Filter out empty strings and join with semicolon
-                    row["gene_name"] = ";".join(filter(None, genes))
+                    raw_accs = row["protein"].split(";")
+                    genes = []
+                    for r_acc in raw_accs:
+                        clean = raw_to_clean.get(r_acc, r_acc)
+                        g = mapping.get(clean, "")
+                        if g and g not in genes: # Deduplicate while maintaining some sense of order
+                            genes.append(g)
+                    
+                    row["gene_name"] = ";".join(genes)
                     writer.writerow(row)
             
             os.replace(temp_file, file_path)
@@ -282,8 +299,9 @@ def run_triqler(
         sys.exit(result.returncode)
 
     if write_spectrum_quants:
-        base_name = os.path.splitext(os.path.basename(triqler_input_file))[0]
-        spectrum_file = f"{base_name}.spectrum_quants.tsv"
+        # Triqler source code shows it appends .sqr.tsv to the input file path
+        spectrum_file = triqler_input_file + ".sqr.tsv"
+        
         if os.path.exists(spectrum_file):
             print(f"Moving spectrum quants to output directory: {spectrum_file}")
             shutil.move(spectrum_file, os.path.join(output_dir, "spectrum_quants.tsv"))
