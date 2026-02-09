@@ -59,7 +59,6 @@ inputs:
     type: "text"
     required: false
     default: "decoy_"
-    placeholder: "decoy_"
     description: "Prefix used to identify decoy proteins in reversed database search"
 
   - name: "min_samples"
@@ -131,7 +130,13 @@ outputs:
   - name: "protein_results"
     path: "proteins.tsv"
     type: "data"
-    description: "Protein-level quantification results with q-values, posterior error probabilities, and fold change estimates"
+    description: "Protein-level quantification results with q-values, posterior error probabilities, fold change estimates, and gene names"
+    format: "tsv"
+
+  - name: "condition_mapping"
+    path: "condition_mapping.tsv"
+    type: "data"
+    description: "Mapping between numerical condition IDs and original condition names"
     format: "tsv"
 
   - name: "triqler_input"

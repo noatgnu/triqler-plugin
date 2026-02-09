@@ -121,7 +121,8 @@ Export fold change posterior distributions to a separate file
 
 | Name | File | Type | Format | Description |
 |------|------|------|--------|-------------|
-| `protein_results` | `proteins.tsv` | data | tsv | Protein-level quantification results with q-values, posterior error probabilities, and fold change estimates |
+| `protein_results` | `proteins.tsv` | data | tsv | Protein-level quantification results with q-values, posterior error probabilities, fold change estimates, and gene names |
+| `condition_mapping` | `condition_mapping.tsv` | data | tsv | Mapping between numerical condition IDs and original condition names |
 | `triqler_input` | `triqler_input.tsv` | data | tsv | Converted triqler input file (only generated when using DIA-NN or MaxQuant format) |
 | `spectrum_quants` | `spectrum_quants.tsv` | data | tsv | Consensus spectrum quantification data |
 | `protein_posteriors` | `protein_posteriors.tsv` | data | tsv | Protein posterior distributions |
