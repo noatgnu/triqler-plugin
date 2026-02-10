@@ -331,16 +331,6 @@ def run_triqler(
     if result.returncode != 0:
         sys.exit(result.returncode)
 
-    if write_spectrum_quants:
-        # Triqler source code shows it appends .sqr.tsv to the input file path
-        spectrum_file = triqler_input_file + ".sqr.tsv"
-        
-        if os.path.exists(spectrum_file):
-            print(f"Moving spectrum quants to output directory: {spectrum_file}")
-            shutil.move(spectrum_file, os.path.join(output_dir, "spectrum_quants.tsv"))
-        else:
-            print(f"Warning: Expected spectrum quants file {spectrum_file} not found.", file=sys.stderr)
-
     # Cleanup malformed columns (extra peptides) before processing
     cleanup_protein_files(output_dir)
 
