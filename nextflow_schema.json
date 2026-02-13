@@ -1,0 +1,121 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "Triqler Protein Quantification pipeline parameters",
+    "description": "Protein quantification with integrated error propagation using Triqler. Propagates uncertainty from MS1 features through peptide to protein level using a probabilistic graphical model, producing posterior probabilities for differential expression. Based on: The \u0026 Käll (2019) Mol Cell Proteomics 18(3):561-570. Repository: https://github.com/statisticalbiotechnology/triqler",
+    "type": "object",
+    "definitions": {
+        "plugin_parameters": {
+            "title": "Plugin parameters",
+            "description": "Parameters for the Triqler Protein Quantification plugin.",
+            "type": "object",
+            "properties": {
+                "decoy_pattern": {
+                    "type": "string",
+                    "description": "Prefix used to identify decoy proteins in reversed database search",
+                    "default": "decoy_"
+                },
+                "file_list_file": {
+                    "type": "string",
+                    "description": "Required for DIA-NN/MaxQuant: Tab-separated file (NO HEADER) mapping run names to conditions. For DIA-NN: run names must match the 'Run' column. For MaxQuant: must match 'Raw file' column without path. Columns: run, condition, [sample], [fraction]",
+                    "format": "file-path"
+                },
+                "fold_change_eval": {
+                    "type": "number",
+                    "description": "Log2 fold change evaluation threshold for differential expression",
+                    "default": 1
+                },
+                "input_file": {
+                    "type": "string",
+                    "description": "For triqler format: PSM file with columns (run, condition, charge, searchScore, intensity, peptide, proteins). For DIA-NN: report.tsv or report.parquet. For MaxQuant: evidence.txt",
+                    "format": "file-path"
+                },
+                "input_format": {
+                    "type": "string",
+                    "description": "Format of the input file. Select 'triqler' for pre-formatted files, 'diann' for DIA-NN report files, or 'maxquant' for MaxQuant evidence.txt",
+                    "default": "triqler"
+                },
+                "min_samples": {
+                    "type": "number",
+                    "description": "Minimum number of peptide quantifications required per protein",
+                    "default": 2
+                },
+                "missing_value_prior": {
+                    "type": "string",
+                    "description": "Distribution fitting method for missing values. Use DIA for DIA data.",
+                    "default": "default"
+                },
+                "num_threads": {
+                    "type": "number",
+                    "description": "Number of CPU threads to use (0 = use all available cores)",
+                    "default": 0
+                },
+                "use_ttest": {
+                    "type": "boolean",
+                    "description": "Use t-test instead of Bayesian posterior probabilities for differential expression",
+                    "default": false
+                },
+                "write_fold_change_posteriors": {
+                    "type": "boolean",
+                    "description": "Export fold change posterior distributions to a separate file",
+                    "default": false
+                },
+                "write_group_posteriors": {
+                    "type": "boolean",
+                    "description": "Export treatment group posterior distributions to a separate file",
+                    "default": false
+                },
+                "write_protein_posteriors": {
+                    "type": "boolean",
+                    "description": "Export protein posterior distributions to a separate file",
+                    "default": false
+                },
+                "write_spectrum_quants": {
+                    "type": "boolean",
+                    "description": "Output consensus spectrum quantification data",
+                    "default": false
+                }
+            }
+        }
+    },
+    "properties": {
+        "decoy_pattern": {
+            "$ref": "#/definitions/plugin_parameters/properties/decoy_pattern"
+        },
+        "file_list_file": {
+            "$ref": "#/definitions/plugin_parameters/properties/file_list_file"
+        },
+        "fold_change_eval": {
+            "$ref": "#/definitions/plugin_parameters/properties/fold_change_eval"
+        },
+        "input_file": {
+            "$ref": "#/definitions/plugin_parameters/properties/input_file"
+        },
+        "input_format": {
+            "$ref": "#/definitions/plugin_parameters/properties/input_format"
+        },
+        "min_samples": {
+            "$ref": "#/definitions/plugin_parameters/properties/min_samples"
+        },
+        "missing_value_prior": {
+            "$ref": "#/definitions/plugin_parameters/properties/missing_value_prior"
+        },
+        "num_threads": {
+            "$ref": "#/definitions/plugin_parameters/properties/num_threads"
+        },
+        "use_ttest": {
+            "$ref": "#/definitions/plugin_parameters/properties/use_ttest"
+        },
+        "write_fold_change_posteriors": {
+            "$ref": "#/definitions/plugin_parameters/properties/write_fold_change_posteriors"
+        },
+        "write_group_posteriors": {
+            "$ref": "#/definitions/plugin_parameters/properties/write_group_posteriors"
+        },
+        "write_protein_posteriors": {
+            "$ref": "#/definitions/plugin_parameters/properties/write_protein_posteriors"
+        },
+        "write_spectrum_quants": {
+            "$ref": "#/definitions/plugin_parameters/properties/write_spectrum_quants"
+        }
+    }
+}
