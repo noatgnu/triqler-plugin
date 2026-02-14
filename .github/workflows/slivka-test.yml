@@ -1,0 +1,67 @@
+name: Test Slivka Service
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'plugin.yaml'
+      - '**.py'
+      - '**.R'
+      - 'requirements.txt'
+      - 'Dockerfile'
+  pull_request:
+    paths:
+      - 'plugin.yaml'
+      - '**.py'
+      - '**.R'
+      - 'requirements.txt'
+      - 'Dockerfile'
+
+jobs:
+  validate-slivka:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Plugin Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Slivka
+        run: |
+          pip install slivka
+
+      - name: Build Cauldron CLI
+        run: |
+          git clone https://github.com/noatgnu/cauldron-go.git /tmp/cauldron-go
+          cd /tmp/cauldron-go
+          go build -o /usr/local/bin/plugin-to-slivka ./cmd/plugin-to-slivka
+
+      - name: Generate Slivka Service
+        run: |
+          plugin-to-slivka --plugin plugin.yaml --output slivka-services
+
+      - name: Validate Slivka YAML
+        run: |
+          python -c "
+          import yaml
+          import sys
+          with open('slivka-services/triqler.service.yaml', 'r') as f:
+              config = yaml.safe_load(f)
+          required = ['slivka-version', 'name', 'description', 'parameters', 'command', 'args', 'outputs', 'execution']
+          missing = [k for k in required if k not in config]
+          if missing:
+              print(f'Missing required fields: {missing}')
+              sys.exit(1)
+          print('Slivka service YAML is valid')
+          "
+

@@ -1,0 +1,168 @@
+# Slivka service configuration for triqler
+# Generated from Cauldron plugin format
+#
+# For file inputs that reference large databases (e.g., FASTA databases),
+# consider configuring them as environment variables pointing to shared storage:
+#   env:
+#     DATABASE_PATH: "${SLIVKA_HOME}/databases/uniref90.fasta"
+# Then reference in args as: arg: "--db=${DATABASE_PATH}"
+
+slivka-version: "0.8"
+name: triqler
+description: Protein quantification with integrated error propagation using Triqler. Propagates uncertainty from MS1 features through peptide to protein level using a probabilistic graphical model, producing posterior probabilities for differential expression. Based on: The & Käll (2019) Mol Cell Proteomics 18(3):561-570. Repository: https://github.com/statisticalbiotechnology/triqler
+author: CauldronGO Team
+version: "1.0.3"
+license: MIT
+classifiers:
+  - "Topic :: Scientific/Engineering :: Bio-Informatics"
+
+parameters:
+  input_format:
+    name: "Input Format"
+    description: "Format of the input file. Select 'triqler' for pre-formatted files, 'diann' for DIA-NN report files, or 'maxquant' for MaxQuant evidence.txt"
+    type: choice
+    required: true
+    default: triqler
+    choices:
+      - triqler
+      - diann
+      - maxquant
+  input_file:
+    name: "Input File"
+    description: "For triqler format: PSM file with columns (run, condition, charge, searchScore, intensity, peptide, proteins). For DIA-NN: report.tsv or report.parquet. For MaxQuant: evidence.txt"
+    type: file
+    required: true
+    media-type: text/csv
+  file_list_file:
+    name: "Run Mapping File"
+    description: "Required for DIA-NN/MaxQuant: Tab-separated file (NO HEADER) mapping run names to conditions. For DIA-NN: run names must match the 'Run' column. For MaxQuant: must match 'Raw file' column without path. Columns: run, condition, [sample], [fraction]"
+    type: file
+    media-type: text/tab-separated-values
+  fold_change_eval:
+    name: "Log2 Fold Change Threshold"
+    description: "Log2 fold change evaluation threshold for differential expression"
+    type: float
+    default: 1
+    min: 0
+    max: 10
+  decoy_pattern:
+    name: "Decoy Protein Prefix"
+    description: "Prefix used to identify decoy proteins in reversed database search"
+    type: text
+    default: decoy_
+  min_samples:
+    name: "Minimum Samples"
+    description: "Minimum number of peptide quantifications required per protein"
+    type: float
+    default: 2
+    min: 1
+    max: 20
+  missing_value_prior:
+    name: "Missing Value Prior"
+    description: "Distribution fitting method for missing values. Use DIA for DIA data."
+    type: choice
+    default: default
+    choices:
+      - default
+      - DIA
+  num_threads:
+    name: "Number of Threads"
+    description: "Number of CPU threads to use (0 = use all available cores)"
+    type: float
+    default: 0
+    min: 0
+    max: 64
+  use_ttest:
+    name: "Use T-Test"
+    description: "Use t-test instead of Bayesian posterior probabilities for differential expression"
+    type: boolean
+    default: false
+  write_spectrum_quants:
+    name: "Write Spectrum Quantifications"
+    description: "Output consensus spectrum quantification data"
+    type: boolean
+    default: false
+  write_protein_posteriors:
+    name: "Write Protein Posteriors"
+    description: "Export protein posterior distributions to a separate file"
+    type: boolean
+    default: false
+  write_group_posteriors:
+    name: "Write Group Posteriors"
+    description: "Export treatment group posterior distributions to a separate file"
+    type: boolean
+    default: false
+  write_fold_change_posteriors:
+    name: "Write Fold Change Posteriors"
+    description: "Export fold change posterior distributions to a separate file"
+    type: boolean
+    default: false
+
+command:
+  - python
+  - triqler_runner.py
+
+args:
+  input_format:
+    arg: "--input_format=$(value)"
+  input_file:
+    arg: "--input_file=$(value)"
+    symlink: "input_file"
+  file_list_file:
+    arg: "--file_list_file=$(value)"
+    symlink: "file_list_file"
+  fold_change_eval:
+    arg: "--fold_change_eval=$(value)"
+  decoy_pattern:
+    arg: "--decoy_pattern=$(value)"
+  min_samples:
+    arg: "--min_samples=$(value)"
+  missing_value_prior:
+    arg: "--missing_value_prior=$(value)"
+  num_threads:
+    arg: "--num_threads=$(value)"
+  use_ttest:
+    arg: "--use_ttest"
+    condition: "$(value)"
+  write_spectrum_quants:
+    arg: "--write_spectrum_quants"
+    condition: "$(value)"
+  write_protein_posteriors:
+    arg: "--write_protein_posteriors"
+    condition: "$(value)"
+  write_group_posteriors:
+    arg: "--write_group_posteriors"
+    condition: "$(value)"
+  write_fold_change_posteriors:
+    arg: "--write_fold_change_posteriors"
+    condition: "$(value)"
+  _output_dir:
+    arg: "--output_dir=."
+
+outputs:
+  protein_results:
+    path: "proteins.tsv"
+    media-type: text/tab-separated-values
+  condition_mapping:
+    path: "condition_mapping.tsv"
+    media-type: text/tab-separated-values
+  triqler_input:
+    path: "triqler_input.tsv"
+    media-type: text/tab-separated-values
+  spectrum_quants:
+    path: "spectrum_quants.tsv"
+    media-type: text/tab-separated-values
+  protein_posteriors:
+    path: "protein_posteriors.tsv"
+    media-type: text/tab-separated-values
+  group_posteriors:
+    path: "group_posteriors.tsv"
+    media-type: text/tab-separated-values
+  fold_change_posteriors:
+    path: "fold_change_posteriors.tsv"
+    media-type: text/tab-separated-values
+
+execution:
+  runners:
+    default:
+      type: SlivkaQueueRunner

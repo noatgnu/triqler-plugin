@@ -38,56 +38,6 @@ process TRIQLER {
     ARG_LIST=()
 
     
-    # Mapping for num_threads
-    VAL="$num_threads"
-    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        ARG_LIST+=("--num_threads" "\$VAL")
-    fi
-    
-    # Mapping for write_spectrum_quants
-    VAL="$write_spectrum_quants"
-    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        if [ "\$VAL" = "true" ]; then
-            ARG_LIST+=("--write_spectrum_quants")
-        fi
-    fi
-    
-    # Mapping for write_group_posteriors
-    VAL="$write_group_posteriors"
-    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        if [ "\$VAL" = "true" ]; then
-            ARG_LIST+=("--write_group_posteriors")
-        fi
-    fi
-    
-    # Mapping for input_format
-    VAL="$input_format"
-    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        ARG_LIST+=("--input_format" "\$VAL")
-    fi
-    
-    # Mapping for min_samples
-    VAL="$min_samples"
-    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        ARG_LIST+=("--min_samples" "\$VAL")
-    fi
-    
-    # Mapping for use_ttest
-    VAL="$use_ttest"
-    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        if [ "\$VAL" = "true" ]; then
-            ARG_LIST+=("--use_ttest")
-        fi
-    fi
-    
-    # Mapping for write_protein_posteriors
-    VAL="$write_protein_posteriors"
-    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        if [ "\$VAL" = "true" ]; then
-            ARG_LIST+=("--write_protein_posteriors")
-        fi
-    fi
-    
     # Mapping for write_fold_change_posteriors
     VAL="$write_fold_change_posteriors"
     if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
@@ -96,10 +46,10 @@ process TRIQLER {
         fi
     fi
     
-    # Mapping for input_file
-    VAL="$input_file"
+    # Mapping for input_format
+    VAL="$input_format"
     if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        ARG_LIST+=("--input_file" "\$VAL")
+        ARG_LIST+=("--input_format" "\$VAL")
     fi
     
     # Mapping for file_list_file
@@ -120,10 +70,60 @@ process TRIQLER {
         ARG_LIST+=("--decoy_pattern" "\$VAL")
     fi
     
+    # Mapping for min_samples
+    VAL="$min_samples"
+    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
+        ARG_LIST+=("--min_samples" "\$VAL")
+    fi
+    
+    # Mapping for use_ttest
+    VAL="$use_ttest"
+    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
+        if [ "\$VAL" = "true" ]; then
+            ARG_LIST+=("--use_ttest")
+        fi
+    fi
+    
+    # Mapping for write_spectrum_quants
+    VAL="$write_spectrum_quants"
+    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
+        if [ "\$VAL" = "true" ]; then
+            ARG_LIST+=("--write_spectrum_quants")
+        fi
+    fi
+    
+    # Mapping for write_group_posteriors
+    VAL="$write_group_posteriors"
+    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
+        if [ "\$VAL" = "true" ]; then
+            ARG_LIST+=("--write_group_posteriors")
+        fi
+    fi
+    
+    # Mapping for input_file
+    VAL="$input_file"
+    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
+        ARG_LIST+=("--input_file" "\$VAL")
+    fi
+    
     # Mapping for missing_value_prior
     VAL="$missing_value_prior"
     if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
         ARG_LIST+=("--missing_value_prior" "\$VAL")
+    fi
+    
+    # Mapping for num_threads
+    VAL="$num_threads"
+    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
+        ARG_LIST+=("--num_threads" "\$VAL")
+    fi
+    
+    # Mapping for write_protein_posteriors
+    VAL="$write_protein_posteriors"
+    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
+        if [ "\$VAL" = "true" ]; then
+            ARG_LIST+=("--write_protein_posteriors")
+        fi
     fi
     
     python /app/triqler_runner.py \
