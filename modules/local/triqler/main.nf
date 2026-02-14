@@ -38,11 +38,11 @@ process TRIQLER {
     ARG_LIST=()
 
     
-    # Mapping for write_fold_change_posteriors
-    VAL="$write_fold_change_posteriors"
+    # Mapping for write_group_posteriors
+    VAL="$write_group_posteriors"
     if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
         if [ "\$VAL" = "true" ]; then
-            ARG_LIST+=("--write_fold_change_posteriors")
+            ARG_LIST+=("--write_group_posteriors")
         fi
     fi
     
@@ -52,10 +52,10 @@ process TRIQLER {
         ARG_LIST+=("--input_format" "\$VAL")
     fi
     
-    # Mapping for file_list_file
-    VAL="$file_list_file"
+    # Mapping for input_file
+    VAL="$input_file"
     if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        ARG_LIST+=("--file_list_file" "\$VAL")
+        ARG_LIST+=("--input_file" "\$VAL")
     fi
     
     # Mapping for fold_change_eval
@@ -76,6 +76,12 @@ process TRIQLER {
         ARG_LIST+=("--min_samples" "\$VAL")
     fi
     
+    # Mapping for num_threads
+    VAL="$num_threads"
+    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
+        ARG_LIST+=("--num_threads" "\$VAL")
+    fi
+    
     # Mapping for use_ttest
     VAL="$use_ttest"
     if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
@@ -84,26 +90,18 @@ process TRIQLER {
         fi
     fi
     
-    # Mapping for write_spectrum_quants
-    VAL="$write_spectrum_quants"
+    # Mapping for write_fold_change_posteriors
+    VAL="$write_fold_change_posteriors"
     if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
         if [ "\$VAL" = "true" ]; then
-            ARG_LIST+=("--write_spectrum_quants")
+            ARG_LIST+=("--write_fold_change_posteriors")
         fi
     fi
     
-    # Mapping for write_group_posteriors
-    VAL="$write_group_posteriors"
+    # Mapping for file_list_file
+    VAL="$file_list_file"
     if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        if [ "\$VAL" = "true" ]; then
-            ARG_LIST+=("--write_group_posteriors")
-        fi
-    fi
-    
-    # Mapping for input_file
-    VAL="$input_file"
-    if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        ARG_LIST+=("--input_file" "\$VAL")
+        ARG_LIST+=("--file_list_file" "\$VAL")
     fi
     
     # Mapping for missing_value_prior
@@ -112,10 +110,12 @@ process TRIQLER {
         ARG_LIST+=("--missing_value_prior" "\$VAL")
     fi
     
-    # Mapping for num_threads
-    VAL="$num_threads"
+    # Mapping for write_spectrum_quants
+    VAL="$write_spectrum_quants"
     if [ -n "\$VAL" ] && [ "\$VAL" != "null" ] && [ "\$VAL" != "[]" ]; then
-        ARG_LIST+=("--num_threads" "\$VAL")
+        if [ "\$VAL" = "true" ]; then
+            ARG_LIST+=("--write_spectrum_quants")
+        fi
     fi
     
     # Mapping for write_protein_posteriors
